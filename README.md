@@ -55,6 +55,7 @@ These are necessary for the mod to run properly in-game. These will usually be
 added to your mod manager of choice.
 
  -  SKSE64
+ -  Address Library for SKSE Plugins
  -  ConsoleUtilSSE NG
 
 #### Build
