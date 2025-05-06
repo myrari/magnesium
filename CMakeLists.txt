@@ -20,16 +20,17 @@ configure_file(
         ${CMAKE_CURRENT_BINARY_DIR}/version.rc
         @ONLY)
 
-# set(headers
-#         include/Sample/Sample.h)
+set(headers 
+    include/magnesium.h
+    src/papyrus.h
+)
 
-set(sources
-#         src/Config.cpp
-#         src/HitCounterManager.cpp
-        src/Main.cpp
-#         src/Papyrus.cpp
-
-        ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
+set(sources 
+    src/main.cpp
+    src/magnesium.cpp
+    src/papyrus.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+)
 
 # set(tests
 #         test/HitCounterManager.cpp
@@ -51,14 +52,14 @@ option(BUILD_TESTS "Build unit tests." OFF)
 message("\tTests: ${BUILD_TESTS}")
 
 # Set auto-deploy location
-# set(SkyrimPluginTargets "C:\\Users\\jacks\\AppData\\Local\\ModOrganizer\\SSE\ Dev\\mods\\Magnesium")
+set(SkyrimPluginTargets C:/Users/jacks/AppData/Local/ModOrganizer/SSE\ Dev/mods/Magnesium)
 
 ########################################################################################################################
 ## Configure target DLL
 ########################################################################################################################
 find_package(CommonLibSSE CONFIG REQUIRED)
-# find_package(ryml CONFIG REQUIRED)
-# find_path(ARTICUNO_INCLUDE_DIRS "articuno/articuno.h")
+find_package(jsoncpp CONFIG REQUIRED)
+find_package(httplib CONFIG REQUIRED)
 
 add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${headers} ${sources})
 add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
@@ -68,7 +69,6 @@ target_include_directories(${PROJECT_NAME}
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
         $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
         $<INSTALL_INTERFACE:src>
-#         ${ARTICUNO_INCLUDE_DIRS}
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -77,15 +77,16 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
-#         ryml::ryml
+        JsonCpp::JsonCpp
+        httplib::httplib
 )
 
 target_precompile_headers(${PROJECT_NAME}
         PRIVATE
         src/PCH.h)
 
-install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/Sample"
-        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+# install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/Sample"
+#         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
 
 install(TARGETS ${PROJECT_NAME}
         DESTINATION "${CMAKE_INSTALL_LIBDIR}")

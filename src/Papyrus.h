@@ -2,8 +2,6 @@
 
 #include <RE/Skyrim.h>
 
-namespace Sample {
-    bool RegisterHitCounter(RE::BSScript::IVirtualMachine* vm);
-
-    void InitializeHook(SKSE::Trampoline& trampoline);
+namespace Magnesium {
+bool RegisterFunctions(RE::BSScript::IVirtualMachine* vm);
 }
