@@ -1,74 +1,158 @@
-# It's recommended to set a minimum CMake version.
-# If you use CMake features from higher versions, update this to match.
 cmake_minimum_required(VERSION 3.21)
+message("Using toolchain file ${CMAKE_TOOLCHAIN_FILE}.")
 
-# Set your project name. This will be the name of your SKSE .dll file.
-project(Magnesium VERSION 0.5.0 LANGUAGES CXX)
+########################################################################################################################
+## Define project
+########################################################################################################################
+project(
+        Magnesium
+        VERSION 2.0.0
+        DESCRIPTION "Skyrim mod for external game control, built with CommonlibSSE-NG"
+        LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
 
-set(HEADERS lib/mongoose.h)
+include(GNUInstallDirs)
 
-set(SOURCES src/plugin.cpp lib/mongoose.cpp)
+configure_file(
+        ${CMAKE_CURRENT_SOURCE_DIR}/cmake/version.rc.in
+        ${CMAKE_CURRENT_BINARY_DIR}/version.rc
+        @ONLY)
 
-source_group(${HEADERS} ${SOURCES})
+# set(headers
+#         include/Sample/Sample.h)
 
-find_package(MFC REQUIRED)
-if(NOT MFC_FOUND)
-    message(FATAL_ERROR "MFC was not found, please install Desktop development with C++ / MFC for newest build tools")
-endif()
+set(sources
+#         src/Config.cpp
+#         src/HitCounterManager.cpp
+        src/Main.cpp
+#         src/Papyrus.cpp
 
-# If you're not using a mod manager, you probably want the SKSE plugin to go
-# inside of your Skyrim "Data" folder.
-#
-# To do this automatically, set the `SKYRIM_FOLDER` environment variable
-# to the path of your Skyrim Special Edition folder
-if(DEFINED ENV{SKYRIM_FOLDER} AND IS_DIRECTORY "$ENV{SKYRIM_FOLDER}/Data")
-    set(OUTPUT_FOLDER "$ENV{SKYRIM_FOLDER}/Data")
-endif()
+        ${CMAKE_CURRENT_BINARY_DIR}/version.rc)
 
-# If you're using Mod Organizer 2 or Vortex, you might want this to go inside
-# of your "mods" folder, inside of a subfolder named "<your mod>".
-#
-# To do this automatically, set the `SKYRIM_MODS_FOLDER` environment variable
-# to the path of your "mods" folder
-if(DEFINED ENV{SKYRIM_MODS_FOLDER} AND IS_DIRECTORY "$ENV{SKYRIM_MODS_FOLDER}")
-    set(OUTPUT_FOLDER "$ENV{SKYRIM_MODS_FOLDER}/${PROJECT_NAME}")
-endif()
+# set(tests
+#         test/HitCounterManager.cpp
+# )
 
-# Otherwise, you can set OUTPUT_FOLDER to any place you'd like :)
-# set(OUTPUT_FOLDER "C:/path/to/any/folder")
+source_group(
+        TREE ${CMAKE_CURRENT_SOURCE_DIR}
+        FILES
+        ${headers}
+        ${sources}
+#         ${tests}
+)
 
-# Setup your SKSE plugin as an SKSE plugin!
+#########################################################################################################################
+### Build options
+#########################################################################################################################
+message("Options:")
+option(BUILD_TESTS "Build unit tests." OFF)
+message("\tTests: ${BUILD_TESTS}")
+
+# Set auto-deploy location
+# set(SkyrimPluginTargets "C:\\Users\\jacks\\AppData\\Local\\ModOrganizer\\SSE\ Dev\\mods\\Magnesium")
+
+########################################################################################################################
+## Configure target DLL
+########################################################################################################################
 find_package(CommonLibSSE CONFIG REQUIRED)
-add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${HEADERS} ${SOURCES}) # <--- specifies plugin.cpp
-target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_23) # <--- use C++23 standard
-target_precompile_headers(${PROJECT_NAME} PRIVATE lib/PCH.h) # <--- PCH.h is required!
+# find_package(ryml CONFIG REQUIRED)
+# find_path(ARTICUNO_INCLUDE_DIRS "articuno/articuno.h")
 
-# When your SKSE .dll is compiled, this will automatically copy the .dll into your mods folder.
-# Only works if you configure DEPLOY_ROOT above (or set the SKYRIM_MODS_FOLDER environment variable)
-if(DEFINED OUTPUT_FOLDER)
-    # If you specify an <OUTPUT_FOLDER> (including via environment variables)
-    # then we'll copy your mod files into Skyrim or a mod manager for you!
+add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${headers} ${sources})
+add_library("${PROJECT_NAME}::${PROJECT_NAME}" ALIAS "${PROJECT_NAME}")
 
-    # Copy the SKSE plugin .dll files into the SKSE/Plugins/ folder
-    set(DLL_FOLDER "${OUTPUT_FOLDER}/SKSE/Plugins")
+target_include_directories(${PROJECT_NAME}
+        PRIVATE
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/src>
+        $<INSTALL_INTERFACE:src>
+#         ${ARTICUNO_INCLUDE_DIRS}
+)
 
-    message(STATUS "SKSE plugin output folder: ${DLL_FOLDER}")
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>)
 
-    add_custom_command(
-        TARGET "${PROJECT_NAME}"
-        POST_BUILD
-        COMMAND "${CMAKE_COMMAND}" -E make_directory "${DLL_FOLDER}"
-        COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_FILE:${PROJECT_NAME}>" "${DLL_FOLDER}/$<TARGET_FILE_NAME:${PROJECT_NAME}>"
-        VERBATIM
-    )
+target_link_libraries(${PROJECT_NAME}
+        PRIVATE
+#         ryml::ryml
+)
 
-    # If you perform a "Debug" build, also copy .pdb file (for debug symbols)
-    if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        add_custom_command(
-            TARGET "${PROJECT_NAME}"
-            POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E copy_if_different "$<TARGET_PDB_FILE:${PROJECT_NAME}>" "${DLL_FOLDER}/$<TARGET_PDB_FILE_NAME:${PROJECT_NAME}>"
-            VERBATIM
-        )
-    endif()
+target_precompile_headers(${PROJECT_NAME}
+        PRIVATE
+        src/PCH.h)
+
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include/Sample"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")
+
+install(TARGETS ${PROJECT_NAME}
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}")
+
+########################################################################################################################
+## Configure unit tests
+########################################################################################################################
+if(BUILD_TESTS)
+    # find_package(Catch2 CONFIG REQUIRED)
+
+    # include(CTest)
+    # include(Catch)
+
+    # add_executable(
+    #         ${PROJECT_NAME}Tests
+    #         ${headers}
+    #         ${tests})
+
+    # target_link_libraries(
+    #         ${PROJECT_NAME}Tests
+    #         PRIVATE
+    #         ${PROJECT_NAME}
+    #         Catch2::Catch2WithMain)
+
+    # target_precompile_headers(${PROJECT_NAME}Tests
+    #         PRIVATE
+    #         src/PCH.h)
+
+    # catch_discover_tests(${PROJECT_NAME}Tests)
+    # add_test(NAME ${PROJECT_NAME}Tests COMMAND ${PROJECT_NAME}Tests)
 endif()
+
+########################################################################################################################
+## Automatic plugin deployment
+########################################################################################################################
+# Automatic deployment to FOMOD directory.
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(BUILD_NAME "Debug")
+else()
+    set(BUILD_NAME "Release")
+endif()
+install(DIRECTORY DESTINATION "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/Papyrus${BUILD_NAME}/")
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E make_directory "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/Plugin${BUILD_NAME}/")
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/Plugin${BUILD_NAME}/")
+if(${CMAKE_BUILD_TYPE} STREQUAL Debug OR ${CMAKE_BUILD_TYPE} STREQUAL RelWithDebInfo)
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/Plugin${BUILD_NAME}/")
+endif()
+file(GLOB_RECURSE OUTPUT_DLLS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/**/*.dll")
+file(GLOB_RECURSE OUTPUT_PDBS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/**/*.pdb")
+file(GLOB_RECURSE OUTPUT_SCRIPTS "${CMAKE_CURRENT_SOURCE_DIR}/contrib/Distribution/**/*.pex")
+set_property(TARGET ${PROJECT_NAME}
+        APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${OUTPUT_DLLS}")
+set_property(TARGET ${PROJECT_NAME}
+        APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${OUTPUT_PDBS}")
+set_property(TARGET ${PROJECT_NAME}
+        APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${OUTPUT_SCRIPTS}")
+
+# Automatic deployment to Mod Organizer 2 mod directory.
+foreach (DEPLOY_TARGET $ENV{SkyrimPluginTargets})
+    message("Adding deployment target ${DEPLOY_TARGET}.")
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}/SKSE/Plugins/")
+    if(${CMAKE_BUILD_TYPE} STREQUAL Debug OR ${CMAKE_BUILD_TYPE} STREQUAL RelWithDebInfo)
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_PDB_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}/SKSE/Plugins/")
+    endif()
+endforeach()
