@@ -1,3 +1,4 @@
+#include "config.h"
 #include "papyrus.h"
 #include "magnesium.h"
 
@@ -11,7 +12,7 @@ using namespace SKSE::stl;
 
 namespace {
 void InitializeLogging() {
-    constexpr auto LOG_LEVEL = spdlog::level::info;
+    const auto LOG_LEVEL = Config::GetSingleton().log_level;
 
     auto path = log_directory();
     if (!path) {

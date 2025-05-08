@@ -6,7 +6,6 @@
 using namespace std;
 using namespace Magnesium;
 using namespace SKSE;
-using namespace SKSE::log;
 
 static std::queue<Message> messageQueue;
 

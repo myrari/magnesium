@@ -22,12 +22,14 @@ configure_file(
 
 set(headers 
     include/magnesium.h
+    src/config.h
     src/papyrus.h
 )
 
 set(sources 
     src/main.cpp
     src/magnesium.cpp
+    src/config.cpp
     src/papyrus.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/version.rc
 )
@@ -51,6 +53,7 @@ set(SkyrimPluginTargets C:/Users/jacks/AppData/Local/ModOrganizer/SSE\ Dev/mods/
 ########################################################################################################################
 find_package(CommonLibSSE CONFIG REQUIRED)
 find_package(jsoncpp CONFIG REQUIRED)
+find_package(yaml-cpp CONFIG REQUIRED)
 find_package(httplib CONFIG REQUIRED)
 
 add_commonlibsse_plugin(${PROJECT_NAME} SOURCES ${headers} ${sources})
@@ -70,6 +73,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
         JsonCpp::JsonCpp
+        yaml-cpp::yaml-cpp
         httplib::httplib
 )
 

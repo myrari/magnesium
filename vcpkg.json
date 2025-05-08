@@ -27,6 +27,7 @@
             "dependencies": [
               "commonlibsse-ng",
               "jsoncpp",
+              "yaml-cpp",
               "cpp-httplib"
             ]
         }
