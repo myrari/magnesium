@@ -1,15 +1,18 @@
 #include "papyrus.h"
+#include "magnesium.h"
 
 #include <stddef.h>
 
 using namespace RE::BSScript;
-// using namespace Sample;
+using namespace Magnesium;
 using namespace SKSE;
 using namespace SKSE::log;
 using namespace SKSE::stl;
 
 namespace {
 void InitializeLogging() {
+    constexpr auto LOG_LEVEL = spdlog::level::info;
+
     auto path = log_directory();
     if (!path) {
         report_and_fail("Unable to lookup SKSE logs directory.");
@@ -29,6 +32,8 @@ void InitializeLogging() {
 
     spdlog::set_default_logger(std::move(log));
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%n] [%l] [%t] [%s:%#] %v");
+    spdlog::set_level(LOG_LEVEL);
+    spdlog::flush_on(LOG_LEVEL);
 }
 
 void InitializePapyrus() {
@@ -60,6 +65,8 @@ void InitializeMessaging() {
                                                   // have loaded, main menu is
                                                   // now active.
                 // It is now safe to access form data.
+
+                PushMessage(Message::Display("test message!"));
                 break;
 
             // Skyrim game events.
@@ -69,10 +76,11 @@ void InitializeMessaging() {
                                                    // load, but it hasn't loaded
                                                    // yet. Data will be the name
                                                    // of the loaded save.
-            case MessagingInterface::
-                kPostLoadGame: // Player's selected save game has finished
-                               // loading. Data will be a boolean indicating
-                               // whether the load was successful.
+            case MessagingInterface::kPostLoadGame:
+
+                break; // Player's selected save game has finished
+                       // loading. Data will be a boolean indicating
+                       // whether the load was successful.
             case MessagingInterface::kSaveGame: // The player has saved a game.
                                                 // Data will be the save name.
             case MessagingInterface::kDeleteGame: // The player deleted a saved

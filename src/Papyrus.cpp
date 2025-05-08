@@ -4,7 +4,7 @@
 constexpr std::string_view PapyrusClass = "Magnesium";
 
 bool Magnesium::RegisterFunctions(RE::BSScript::IVirtualMachine* vm) {
-    vm->RegisterFunction("NextMessage", PapyrusClass, NextMessage);
+    vm->RegisterFunction("PopMessage", PapyrusClass, PopMessage);
 
     return true;
 }

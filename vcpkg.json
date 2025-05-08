@@ -29,24 +29,10 @@
               "jsoncpp",
               "cpp-httplib"
             ]
-        },
-        "tests": {
-            "description": "Build tests for the SKSE plugin.",
-            "dependencies": [
-                {
-                    "name": "magnesium",
-                    "default-features": false,
-                    "features": [
-                        "plugin"
-                    ]
-                },
-                "catch2"
-            ]
         }
     },
     "default-features": [
         "scripts-dev",
-        "plugin",
-        "tests"
+        "plugin"
     ]
 }

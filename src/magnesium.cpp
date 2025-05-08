@@ -5,6 +5,8 @@
 
 using namespace std;
 using namespace Magnesium;
+using namespace SKSE;
+using namespace SKSE::log;
 
 static std::queue<Message> messageQueue;
 
@@ -40,11 +42,19 @@ Message Message::Display(std::string message) {
     return Message(MessageType::DisplayMessage, message);
 }
 
-string Magnesium::NextMessage(RE::StaticFunctionTag* _) {
+void Magnesium::PushMessage(Message message) { 
+    log::trace("Pushing message: {}", message.toString());
+    messageQueue.push(message); 
+}
+
+string Magnesium::PopMessage(RE::StaticFunctionTag*) {
     if (messageQueue.empty()) {
+        log::trace("Message queue empty");
         return "";
     }
     auto message = messageQueue.front();
     messageQueue.pop();
-    return message.toString();
+    auto msgStr = message.toString();
+    log::trace("Sent message {}", msgStr);
+    return msgStr;
 }

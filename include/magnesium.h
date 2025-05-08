@@ -24,6 +24,7 @@ class Message {
     static Message Display(std::string);
 };
 
-std::string NextMessage(RE::StaticFunctionTag*);
+void PushMessage(Message);
+std::string PopMessage(RE::StaticFunctionTag*);
 
 } // namespace Magnesium

@@ -32,24 +32,16 @@ set(sources
     ${CMAKE_CURRENT_BINARY_DIR}/version.rc
 )
 
-# set(tests
-#         test/HitCounterManager.cpp
-# )
-
 source_group(
         TREE ${CMAKE_CURRENT_SOURCE_DIR}
         FILES
         ${headers}
         ${sources}
-#         ${tests}
 )
 
 #########################################################################################################################
 ### Build options
 #########################################################################################################################
-message("Options:")
-option(BUILD_TESTS "Build unit tests." OFF)
-message("\tTests: ${BUILD_TESTS}")
 
 # Set auto-deploy location
 set(SkyrimPluginTargets C:/Users/jacks/AppData/Local/ModOrganizer/SSE\ Dev/mods/Magnesium)
@@ -92,34 +84,6 @@ install(TARGETS ${PROJECT_NAME}
         DESTINATION "${CMAKE_INSTALL_LIBDIR}")
 
 ########################################################################################################################
-## Configure unit tests
-########################################################################################################################
-if(BUILD_TESTS)
-    # find_package(Catch2 CONFIG REQUIRED)
-
-    # include(CTest)
-    # include(Catch)
-
-    # add_executable(
-    #         ${PROJECT_NAME}Tests
-    #         ${headers}
-    #         ${tests})
-
-    # target_link_libraries(
-    #         ${PROJECT_NAME}Tests
-    #         PRIVATE
-    #         ${PROJECT_NAME}
-    #         Catch2::Catch2WithMain)
-
-    # target_precompile_headers(${PROJECT_NAME}Tests
-    #         PRIVATE
-    #         src/PCH.h)
-
-    # catch_discover_tests(${PROJECT_NAME}Tests)
-    # add_test(NAME ${PROJECT_NAME}Tests COMMAND ${PROJECT_NAME}Tests)
-endif()
-
-########################################################################################################################
 ## Automatic plugin deployment
 ########################################################################################################################
 # Automatic deployment to FOMOD directory.
@@ -148,7 +112,7 @@ set_property(TARGET ${PROJECT_NAME}
         APPEND PROPERTY ADDITIONAL_CLEAN_FILES "${OUTPUT_SCRIPTS}")
 
 # Automatic deployment to Mod Organizer 2 mod directory.
-foreach (DEPLOY_TARGET $ENV{SkyrimPluginTargets})
+foreach (DEPLOY_TARGET ${SkyrimPluginTargets})
     message("Adding deployment target ${DEPLOY_TARGET}.")
     add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:${PROJECT_NAME}> "${DEPLOY_TARGET}/SKSE/Plugins/")

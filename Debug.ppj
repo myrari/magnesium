@@ -12,6 +12,6 @@
         <Import>.\build\debug-msvc\vcpkg_installed\x64-windows-skse\contrib\papyrus\skyrim</Import>
     </Imports>
     <Folders>
-        <Folder>.\contrib\Distribution\PapyrusSources</Folder>
+        <Folder>.\src\Scripts\Source</Folder>
     </Folders>
 </PapyrusProject>

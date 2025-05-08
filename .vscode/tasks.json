@@ -4,7 +4,7 @@
 		{
 			"type": "pyro",
 			"projectFile": "Debug.ppj",
-			"gamePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Skyrim Special Edition\\",
+			"gamePath": "${env:SKYRIM_FOLDER}\\",
 			"problemMatcher": [
 				"$PapyrusCompiler"
 			],
@@ -15,20 +15,8 @@
 		},
 		{
 			"type": "pyro",
-			"projectFile": "Debug-Tests.ppj",
-			"gamePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Skyrim Special Edition\\",
-			"problemMatcher": [
-				"$PapyrusCompiler"
-			],
-			"label": "Compile Papyrus Test Scripts",
-			"group": {
-				"kind": "build"
-			}
-		},
-		{
-			"type": "pyro",
 			"projectFile": "Release.ppj",
-			"gamePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Skyrim Special Edition\\",
+			"gamePath": "${env:SKYRIM_FOLDER}\\",
 			"problemMatcher": [
 				"$PapyrusCompiler"
 			],
@@ -36,6 +24,25 @@
 			"group": {
 				"kind": "build"
 			}
+		},
+		{
+			"label": "Deploy ESP",
+			"type": "shell",
+			"group": "build",
+			"command": "cp '${workspaceFolder}/${workspaceFolderBasename}.esp' '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/'"
+		},
+		{
+			"label": "Deploy (Debug)",
+			"type": "shell",
+			"dependsOn": [
+				"Compile Papyrus Scripts (Debug)",
+				"Deploy ESP"
+			],
+			"group": "build",
+			"command": "mkdir -p '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts' && find '${workspaceFolder}/contrib/Distribution/PapyrusDebug/' -name '*.pex' -exec cp {} '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts/' \\;",
+			// "windows": {
+			// 	"command": "mkdir '\\\\?\\${env:SKYRIM_MODS_FOLDER}\\${workspaceFolderBasename}\\Scripts' && cp '${workspaceFolder}\\contrib\\Distribution\\PapyrusDebug\\*' '${env:SKYRIM_MODS_FOLDER}\\${workspaceFolderBasename}\\Scripts\\'"
+			// }
 		}
 	]
 }
