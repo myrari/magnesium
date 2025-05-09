@@ -1,8 +1,38 @@
 {
     "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
     "name": "magnesium",
-    "version-string": "0.5.0",
-    "dependencies": [
-        "commonlibsse-ng"
+    "version-string": "2.0.0",
+    "port-version": 0,
+    "description": "Skyrim mod for external game control, built with CommonlibSSE-NG",
+    "license": "MIT",
+    "features": {
+        "scripts": {
+            "description": "Install Papyrus sources for this program to develop on top of it."
+        },
+        "scripts-dev": {
+            "description": "Install Papyrus sources necessary to develop scripts for this plugin.",
+            "dependencies": [
+                "bethesda-skyrim-scripts",
+                {
+                    "name": "skse",
+                    "default-features": false,
+                    "features": [
+                        "scripts"
+                    ]
+                }
+            ]
+        },
+        "plugin": {
+            "description": "Build the SKSE plugin.",
+            "dependencies": [
+              "commonlibsse-ng",
+              "yaml-cpp",
+              "cpp-httplib"
+            ]
+        }
+    },
+    "default-features": [
+        "scripts-dev",
+        "plugin"
     ]
 }

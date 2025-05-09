@@ -1,14 +1,5 @@
 ; Copyright (c) 2024 Myra Roberts
 ; This file is part of Magnesium.
-;
-; Magnesium is free software: you can redistribute it and/or modify it under
-; the terms of the GNU General Public License as published by the Free Software
-; Foundation, either version 2 of the License, or (at your option) any later
-; version.
-;
-; Magnesium is distributed in the hope that it will be useful, but WITHOUT ANY
-; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-; A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 
 Scriptname MagnesiumInit extends Quest
 {Initialization script for Magnesium, runs as soon as quests load}
@@ -29,10 +20,10 @@ EndEvent
 
 ; get the first command in the queue, keep executing until queue is empty
 Function ProcessMessageQueue()
-    string messageFromQueue = CustomPapyrusFunctions.GetMessage()
+    string messageFromQueue = Magnesium.PopMessage()
     while messageFromQueue
         ProcessMessage(messageFromQueue)
-        messageFromQueue = CustomPapyrusFunctions.GetMessage()
+        messageFromQueue = Magnesium.PopMessage()
     endwhile
 EndFunction
 
@@ -51,5 +42,11 @@ Function ProcessMessage(string messageString)
         Debug.Notification(messageData)
     elseif messageType == "ConsoleCommand"
         ConsoleUtil.ExecuteCommand(messageData)
+    elseif messageType == "SetInterval"
+        float newInterval = messageData as float
+        interval = newInterval
+        Debug.Notification("Set interval to " + messageData)
+    else
+        Debug.Notification("Received message of unkown type: " + messageType)
     endif
 EndFunction
