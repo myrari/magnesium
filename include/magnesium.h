@@ -7,6 +7,7 @@ namespace Magnesium {
 enum MessageType {
     ConsoleCommand,
     DisplayMessage,
+    SetInterval,
 };
 
 class Message {
@@ -14,14 +15,14 @@ class Message {
     MessageType type;
     std::string data;
 
-    Message(MessageType, std::string);
-
     std::string toString();
-
-    static Message fromJson();
 
     static Message Command(std::string);
     static Message Display(std::string);
+    static Message SetInterval(float);
+
+  private:
+    Message(MessageType, std::string);
 };
 
 void PushMessage(Message);

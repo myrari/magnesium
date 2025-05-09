@@ -17,17 +17,18 @@ struct LogLevelMap : public std::map<std::string, spdlog::level::level_enum> {
 class Config {
   public:
     spdlog::level::level_enum log_level;
-
     int port;
+    float interval;
 
     [[nodiscard]] static const Config& GetSingleton();
 
     static const Config& Default() noexcept {
-        return Config(spdlog::level::info, 8080);
+        return Config(spdlog::level::info, 8080, 1.0f);
     }
 
   private:
-    Config(spdlog::level::level_enum level, int port) : log_level(level), port(port) {};
+    Config(spdlog::level::level_enum level, int port, float interval)
+        : log_level(level), port(port), interval(interval) {};
 };
 
 } // namespace Magnesium

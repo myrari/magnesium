@@ -20,6 +20,9 @@ const Config& Magnesium::Config::GetSingleton() {
         auto port = cfg["port"].as<int>();
         instance.port = port;
 
+        auto interval = cfg["interval"].as<float>();
+        instance.interval = interval;
+
         latch.count_down();
     }
     latch.wait();

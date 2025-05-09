@@ -42,5 +42,11 @@ Function ProcessMessage(string messageString)
         Debug.Notification(messageData)
     elseif messageType == "ConsoleCommand"
         ConsoleUtil.ExecuteCommand(messageData)
+    elseif messageType == "SetInterval"
+        float newInterval = messageData as float
+        interval = newInterval
+        Debug.Notification("Set interval to " + messageData)
+    else
+        Debug.Notification("Received message of unkown type: " + messageType)
     endif
 EndFunction

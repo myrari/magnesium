@@ -19,6 +19,8 @@ std::string messageTypeToString(MessageType messageType) {
         return "ConsoleCommand";
     case DisplayMessage:
         return "DisplayMessage";
+    case SetInterval:
+        return "SetInterval";
     default:
         return "Unknown";
     }
@@ -33,10 +35,6 @@ string Message::toString() {
     return std::format("{};{}", messageTypeToString(this->type), this->data);
 }
 
-Message Message::fromJson() {
-    return Message::Display("Deserialize not yet implemented!");
-}
-
 Message Message::Command(std::string command) {
     return Message(MessageType::ConsoleCommand, command);
 }
@@ -45,8 +43,13 @@ Message Message::Display(std::string message) {
     return Message(MessageType::DisplayMessage, message);
 }
 
+Message Message::SetInterval(float interval) {
+    return Message(MessageType::SetInterval, std::format("{}", interval));
+}
+
 void Magnesium::PushMessage(Message message) {
-    log::trace("Pushing message: {}", message.toString());
+    auto msgstr = message.toString();
+    log::trace("Pushing message: {}", msgstr);
     messageQueue.push(message);
 }
 

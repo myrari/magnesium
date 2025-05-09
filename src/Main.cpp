@@ -47,53 +47,23 @@ void InitializePapyrus() {
 }
 
 void InitializeMessaging() {
-    if (!GetMessagingInterface()->RegisterListener([](MessagingInterface::
-                                                          Message* message) {
-            switch (message->type) {
-            // Skyrim lifecycle events.
-            case MessagingInterface::
-                kPostLoad: // Called after all plugins have finished running
-                           // SKSEPlugin_Load. It is now safe to do
-                           // multithreaded operations, or operations against
-                           // other plugins.
-                log::info("Starting HTTP server");
-                StartServer();
+    if (!GetMessagingInterface()->RegisterListener(
+            [](MessagingInterface::Message* message) {
+                switch (message->type) {
+                case MessagingInterface::kPostLoad:
 
-                break;
-            case MessagingInterface::kPostPostLoad: // Called after all
-                                                    // kPostLoad message
-                                                    // handlers have run.
-            case MessagingInterface::kInputLoaded:  // Called when all game data
-                                                    // has been found.
-                break;
-            case MessagingInterface::kDataLoaded: // All ESM/ESL/ESP plugins
-                                                  // have loaded, main menu is
-                                                  // now active.
-                // It is now safe to access form data.
+                    log::info("Starting HTTP server");
+                    StartServer();
 
-                PushMessage(Message::Display("test message!"));
-                break;
+                    break;
 
-            // Skyrim game events.
-            case MessagingInterface::kNewGame: // Player starts a new game from
-                                               // main menu.
-            case MessagingInterface::kPreLoadGame: // Player selected a game to
-                                                   // load, but it hasn't loaded
-                                                   // yet. Data will be the name
-                                                   // of the loaded save.
-            case MessagingInterface::kPostLoadGame:
+                case MessagingInterface::kDataLoaded:
 
-                break; // Player's selected save game has finished
-                       // loading. Data will be a boolean indicating
-                       // whether the load was successful.
-            case MessagingInterface::kSaveGame: // The player has saved a game.
-                                                // Data will be the save name.
-            case MessagingInterface::kDeleteGame: // The player deleted a saved
-                                                  // game from within the load
-                                                  // menu.
-                break;
-            }
-        })) {
+                    // set default fetch interval
+                    PushMessage(Message::SetInterval(Config::GetSingleton().interval));
+                    break;
+                }
+            })) {
         stl::report_and_fail("Unable to register message listener.");
     }
 }

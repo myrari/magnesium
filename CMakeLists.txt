@@ -52,7 +52,6 @@ set(SkyrimPluginTargets C:/Users/jacks/AppData/Local/ModOrganizer/SSE\ Dev/mods/
 ## Configure target DLL
 ########################################################################################################################
 find_package(CommonLibSSE CONFIG REQUIRED)
-find_package(jsoncpp CONFIG REQUIRED)
 find_package(yaml-cpp CONFIG REQUIRED)
 find_package(httplib CONFIG REQUIRED)
 
@@ -72,7 +71,6 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE
-        JsonCpp::JsonCpp
         yaml-cpp::yaml-cpp
         httplib::httplib
 )

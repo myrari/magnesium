@@ -47,6 +47,17 @@
 			],
 			"group": "build",
 			"command": "mkdir -p '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts' && find '${workspaceFolder}/contrib/Distribution/PapyrusDebug/' -name '*.pex' -exec cp {} '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts/' \\;"
+		},
+		{
+			"label": "Deploy (Release)",
+			"type": "shell",
+			"dependsOn": [
+				"Compile Papyrus Scripts (Release)",
+				"Deploy ESP",
+				"Deploy Config"
+			],
+			"group": "build",
+			"command": "mkdir -p '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts' && find '${workspaceFolder}/contrib/Distribution/PapyrusDebug/' -name '*.pex' -exec cp {} '${env:SKYRIM_MODS_FOLDER}/${workspaceFolderBasename}/Scripts/' \\;"
 		}
 	]
 }
