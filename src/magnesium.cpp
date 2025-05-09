@@ -63,17 +63,29 @@ string Magnesium::PopMessage(RE::StaticFunctionTag*) {
 }
 
 const char* main_page = R"(
-<form id="formElem">
+<form id="display_form">
     <label for="msg">Message:</label>
     <input type="text" id="msg" name="msg"><br><br>
     <input type="submit">
 </form>
+<form id="command_form">
+    <label for="msg">Command:</label>
+    <input type="text" id="cmd" name="cmd"><br><br>
+    <input type="submit">
+</form>
 <script>
-    formElem.onsubmit = async (e) => {
+    display_form.onsubmit = async (e) => {
         e.preventDefault();
         await fetch('/display', {
             method: 'POST',
-            body: new FormData(formElem)
+            body: new FormData(display_form)
+        });
+    };
+    command_form.onsubmit = async (e) => {
+        e.preventDefault();
+        await fetch('/command', {
+            method: 'POST',
+            body: new FormData(command_form)
         });
     };
 </script>
@@ -110,10 +122,17 @@ void RunServer(int port) {
 
         res.set_content("done", "text/plain");
     });
+    svr.Post("/command", [](const Request& req, Response& res) {
+        auto cmd = req.get_file_value("cmd");
+        log::debug("Received console command: {}", cmd.content);
+        PushMessage(Message::Command(cmd.content));
+
+        res.set_content("done", "text/plain");
+    });
 
     log::debug("Launching server");
 
-    svr.listen("localhost", port);
+    svr.listen("0.0.0.0", port);
 }
 
 void Magnesium::StartServer() {

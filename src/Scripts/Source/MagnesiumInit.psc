@@ -41,6 +41,6 @@ Function ProcessMessage(string messageString)
     if messageType == "DisplayMessage"
         Debug.Notification(messageData)
     elseif messageType == "ConsoleCommand"
-        ; ConsoleUtil.ExecuteCommand(messageData)
+        ConsoleUtil.ExecuteCommand(messageData)
     endif
 EndFunction
