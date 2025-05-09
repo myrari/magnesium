@@ -1,6 +1,6 @@
 #include "config.h"
-#include "papyrus.h"
 #include "magnesium.h"
+#include "papyrus.h"
 
 #include <stddef.h>
 
@@ -56,6 +56,10 @@ void InitializeMessaging() {
                            // SKSEPlugin_Load. It is now safe to do
                            // multithreaded operations, or operations against
                            // other plugins.
+                log::info("Starting HTTP server");
+                StartServer();
+
+                break;
             case MessagingInterface::kPostPostLoad: // Called after all
                                                     // kPostLoad message
                                                     // handlers have run.

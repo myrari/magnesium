@@ -18,14 +18,16 @@ class Config {
   public:
     spdlog::level::level_enum log_level;
 
+    int port;
+
     [[nodiscard]] static const Config& GetSingleton();
 
     static const Config& Default() noexcept {
-        return Config(spdlog::level::info);
+        return Config(spdlog::level::info, 8080);
     }
 
   private:
-    Config(spdlog::level::level_enum level) : log_level(level) {};
+    Config(spdlog::level::level_enum level, int port) : log_level(level), port(port) {};
 };
 
 } // namespace Magnesium

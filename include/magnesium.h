@@ -27,4 +27,6 @@ class Message {
 void PushMessage(Message);
 std::string PopMessage(RE::StaticFunctionTag*);
 
+void StartServer();
+
 } // namespace Magnesium

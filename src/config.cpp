@@ -12,9 +12,14 @@ const Config& Magnesium::Config::GetSingleton() {
     static std::latch latch(1);
     if (!initialized.exchange(true)) {
         auto cfg = YAML::LoadFile("Data/SKSE/Plugins/magnesium.yaml");
+
         auto log_level = cfg["log_level"].as<std::string>();
         LogLevelMap log_level_map;
         instance.log_level = log_level_map[log_level];
+
+        auto port = cfg["port"].as<int>();
+        instance.port = port;
+
         latch.count_down();
     }
     latch.wait();
