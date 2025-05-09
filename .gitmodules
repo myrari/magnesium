@@ -1,0 +1,3 @@
+[submodule "ConsoleUtilSSE"]
+	path = ConsoleUtilSSE
+	url = https://github.com/VersuchDrei/ConsoleUtilSSE.git
