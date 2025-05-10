@@ -8,15 +8,10 @@ items, entities, etc.
 
 ### How to Use
 
-At the moment, there are no public binary releases of the mod, and so you must
-build it yourself. The project is built with CMake, since it's what CommonLib
-is made to be used with, and has integration with `vcpkg`. The project also has
-several Papyrus scripts, and while these can be compiled using whatever compiler
-you choose, I recommend [Pyro](https://github.com/fireundubh/pyro). All
+Releases are currently published via this GitHub page, the packed zip files
+can be obtained [here](https://github.com/myrari/magnesium/releases). All
 dependencies for building/running the mod are listen in the
 [Dependencies](#dependencies) section.
-
-The goal is to eventually ship this as a proper FOMOD package, currently WIP.
 
 ### How it Works
 
