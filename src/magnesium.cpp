@@ -81,14 +81,14 @@ const char* main_page = R"(
         e.preventDefault();
         await fetch('/display', {
             method: 'POST',
-            body: new FormData(display_form)
+            body: new FormData(display_form).get("msg")
         });
     };
     command_form.onsubmit = async (e) => {
         e.preventDefault();
         await fetch('/command', {
             method: 'POST',
-            body: new FormData(command_form)
+            body: new FormData(command_form).get("cmd")
         });
     };
 </script>
@@ -119,16 +119,16 @@ void RunServer(int port) {
     });
 
     svr.Post("/display", [](const Request& req, Response& res) {
-        auto msg = req.get_file_value("msg");
-        log::debug("Received display message: {}", msg.content);
-        PushMessage(Message::Display(msg.content));
+        auto msg = req.body;
+        log::debug("Received display message: {}", msg);
+        PushMessage(Message::Display(msg));
 
         res.set_content("done", "text/plain");
     });
     svr.Post("/command", [](const Request& req, Response& res) {
-        auto cmd = req.get_file_value("cmd");
-        log::debug("Received console command: {}", cmd.content);
-        PushMessage(Message::Command(cmd.content));
+        auto cmd = req.body;
+        log::debug("Received console command: {}", cmd);
+        PushMessage(Message::Command(cmd));
 
         res.set_content("done", "text/plain");
     });
